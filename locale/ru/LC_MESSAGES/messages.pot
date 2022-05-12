@@ -1,0 +1,43 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2022-04-20 14:12+0300\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: opentip.py:15
+msgid "Please set the OPENTIP_APIKEY env variable or use --apikey. You can get a key at https://opentip.kaspersky.com/token"
+msgstr "Установите токен доступа в переменную окружения OPENTIP_APIKEY или ключ --apikey. Токен можно получить на https://opentip.kaspersky.com/token"
+
+#: opentip.py:23
+msgid "Check files and directories with OpenTIP.kaspersky.com, optionally upload and scan unknown files"
+msgstr "Утилита для проверки файлов и директорий с помощью сервиса OpenTIP.kaspersky.com, с опциональной загрузкой неизвестных файлов для проверки"
+
+#: opentip.py:24
+msgid "DO NOT upload unknown files to scan with the Sandbox, default behaviour is to upload"
+msgstr "НЕ ЗАГРУЖАТЬ неизвестные файлы для проверки в Sandbox. По умолчанию неизвестные файлы загружаются автоматически"
+
+#: opentip.py:25
+msgid "Do not scan or upload the files matching the pattern"
+msgstr "Не проверять и не загружать файлы по маске"
+
+#: opentip.py:26
+msgid "File or directory location to scan"
+msgstr "Пути к файлам и директориям для проверки"
+
+msgid "Error uploading %s"
+msgstr "Ошибка загрузки %s"
+
+msgid "Received \"Forbidden\", please use another API key or try again later"
+msgstr "Получен ответ \"Forbidden\", используйте другой API токен или попробуйте проверить позже"
+
+msgid "Write results to the log file"
+msgstr "Файл журнала для записи результатов"
+
+msgid "Do not log clean files"
+msgstr "Записывать в журнал только вредоносные файлы и ошибки"
+
+msgid "OpenTIP API key, received from https://opentip.kaspersky.com/token"
+msgstr "Токен OpenTIP, полученный на https://opentip.kaspersky.com/token"
