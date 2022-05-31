@@ -1,9 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 
 # © 2022 AO Kaspersky Lab. All Rights Reserved.
-import hashlib, argparse, fnmatch, gettext, sys, os, time, urllib.request, urllib.error, asyncio, concurrent.futures, threading, json, logging
-#from opentip import linux
+import hashlib, argparse, fnmatch, gettext, sys, os, time, urllib.request, urllib.error, concurrent.futures, threading, json, logging
+from opentip.client import OpenTIP
 
-version = 2
+version = 1.1
+
 gettext.install('messages', os.path.dirname(os.path.realpath(__file__)) + '/locale')
 
 # Provide the root directory, for remounted or remote system volumes
@@ -12,7 +13,6 @@ rootdir = os.getenv('OPENTIP_ROOTDIR', '/')
 scanners = []
 MAX_UPLOAD_SIZE = 10 * 1024*1024
 upload_queue = []
-frontend_url = 'https://opentip.kaspersky.com/api/v1/'
 
 parser = argparse.ArgumentParser(description=_('Check files and directories with OpenTIP.kaspersky.com, optionally upload and scan unknown files'))
 parser.add_argument('--no-upload', help=_('DO NOT upload unknown files to scan with the Sandbox, default behaviour is to upload'),action='store_true')
@@ -59,25 +59,9 @@ stopping = threading.Event()
 #    raise RuntimeError('Windows is not supported')
 #else:
 #    raise RuntimeError(f'{sys.platform} is not supported')
+client = OpenTIP(APIKEY, args.no_upload, MAX_UPLOAD_SIZE)
 
-def opentip_get(req:str):
-    url = frontend_url + req
-    req = urllib.request.Request(url)
-    req.add_header('x-api-key', APIKEY)
-    with urllib.request.urlopen(req) as f:
-        data = f.read().decode('utf-8')
-    return data
-
-def opentip_post(req:str,data):
-    url = frontend_url + req
-    req = urllib.request.Request(url,method='POST',data=data)
-    req.add_header('x-api-key', APIKEY)
-    req.add_header('Content-Type', 'application/octet-stream')
-    with urllib.request.urlopen(req) as f:
-        data = f.read().decode('utf-8')
-    return data
-
-def scan_file(filename):
+def scan_file_with_client(filename):
     if stopping.is_set():
         return
     # print(f'{filename}')
@@ -86,53 +70,14 @@ def scan_file(filename):
         for pattern in args.exclude:
             if fnmatch.fnmatch(filename, pattern):
                 return (filename, 'excluded')
-
-    # Now, hash the contents of the file
-    h = hashlib.new('sha256')
-    buf = b''
     try:
-        with open(filename, 'rb') as f:
-            while True:
-                new_buf = f.read(MAX_UPLOAD_SIZE)
-                if len(new_buf) == 0:
-                    break
-                buf = new_buf
-                h.update(buf)
-    except PermissionError as e:
-        return (filename, 'denied')
-    except OSError as e:
-        return (filename, 'OS error')
+        return client.scan_file(filename)
+    except:
+        stopping.set()
+        raise
 
-    sha = h.hexdigest()
-    # Search by hash
-    try:
-        res = opentip_get('search/hash?request=' + sha)
-    except urllib.error.HTTPError as e:
-        if e.code == 400: # Unknown file
-            # Upload the file for analysis
-            file_size = os.path.getsize(filename)
-            if args.no_upload or ( file_size > MAX_UPLOAD_SIZE or file_size == 0 ):
-                return (filename, None)
-            else:
-                try:
-                    res = opentip_post('scan/file?filename=' + sha, buf)
-                    if len(res) == 0:
-                        stopping.set()
-                        raise RuntimeError(filename)
-                    else:
-                        return (filename, res)
-
-                except urllib.error.HTTPError as e:
-                    logging.error(_('Error uploading %s') % filename)
-                    stopping.set()
-                    raise e
-        else:
-            stopping.set()
-            raise e
-    return (filename, res)
-    
 def scan_file_wrapper(filename):
-    futures.append(executor.submit(scan_file, filename))
+    futures.append(executor.submit(scan_file_with_client, filename))
 
 def scan_dir(path):
     result = []
