@@ -6,7 +6,7 @@ It can scan files and directories and provide the verdict (clean, malware, adwar
 
 To run the script, you need to obtain a valid API key from [OpenTIP](https://opentip.kaspersky.com/token) and set it with the --apikey command line switch or the OPENTIP\_APIKEY environment variable.
 
-## Builting
+## Building
 
 ```
 python3 -m build
@@ -17,7 +17,7 @@ python3 -m build
 Install the package via pip.
 
 ```
-pip3 install opentip-1.1-py3-none-any.whl
+pip3 install opentip
 ```
 
 
