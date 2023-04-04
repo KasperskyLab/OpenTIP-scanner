@@ -126,7 +126,7 @@ def main():
             logging.error(_('Received "Forbidden", please use another API key or try again later'))
             ret = 2
         else:
-            raise 
+            raise
 
     stopping.set()
     executor.shutdown()
