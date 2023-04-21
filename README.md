@@ -2,7 +2,7 @@
 
 The script is a Python 3 client to the [OpenTIP service](https://opentip.kaspersky.com).
 
-It can scan files and directories and provide the verdict (clean, malware, adware). For unknown files, it will also upload them to the service for scanning and Sandbox processing (optional).
+It can scan files and directories and provide the category (clean, malware, adware). For unknown files, it will also upload them to the service for scanning and Sandbox processing (optional).
 
 To run the script, you need to obtain a valid API key from [OpenTIP](https://opentip.kaspersky.com/token) and set it with the --apikey command line switch or the OPENTIP\_APIKEY environment variable.
 
