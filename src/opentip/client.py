@@ -28,7 +28,7 @@ class OpenTIP:
         try:
             return self.opentip_get('search/' + ioc_type + '?request=' + ioc_value)
         except urllib.error.HTTPError as e:
-            if e.code == 400: # Unknown
+            if e.code == 404: # Request not processed: requested object lookup results not found.
                 return None
             else:
                 raise
