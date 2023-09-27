@@ -28,7 +28,7 @@ class OpenTIP:
         try:
             return self.opentip_get('search/' + ioc_type + '?request=' + ioc_value)
         except urllib.error.HTTPError as e:
-            if e.code == 400: # Unknown 
+            if e.code == 400: # Unknown
                 return None
             else:
                 raise
@@ -41,7 +41,7 @@ class OpenTIP:
             with open(filename, 'rb') as f:
                 while True:
                     new_buf = f.read(self.max_upload_size)
-                    if len(new_buf) == 0:
+                    if not new_buf:
                         break
                     buf = new_buf
                     h.update(buf)
@@ -61,7 +61,7 @@ class OpenTIP:
             else:
                 try:
                     res = self.opentip_post('scan/file?filename=' + sha, buf)
-                    if len(res) == 0:
+                    if not res:
                         raise RuntimeError(filename)
                     else:
                         return (filename, res)
@@ -69,5 +69,4 @@ class OpenTIP:
                 except urllib.error.HTTPError as e:
                     raise RuntimeError(_('Error uploading %s') % filename)
         return (filename, res)
-        
 
